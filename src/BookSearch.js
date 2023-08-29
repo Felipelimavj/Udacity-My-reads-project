@@ -47,6 +47,7 @@ const BookSearch = ({ handleShelfChange, shelves }) => {
   const onSearchQueryChange = async (event) => {
     const query = event.target.value;
     setSearchQuery(query);
+    event.preventDefault();
 
     if (query.trim() === "") {
       setSearchResult([]);
@@ -61,10 +62,10 @@ const BookSearch = ({ handleShelfChange, shelves }) => {
     }
   };
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-  };
-
+  // const handleSearchSubmit = (event) => {
+  //   event.preventDefault();
+  // };
+  console.log(searchResult);
   return (
     <div>
       <div className="search-books-bar">
@@ -80,42 +81,44 @@ const BookSearch = ({ handleShelfChange, shelves }) => {
             value={searchQuery}
             onChange={onSearchQueryChange}
           />
-          <button onClick={handleSearchSubmit}>Search</button>
+          {/* <button onClick={handleSearchSubmit}>Search</button> */}
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {searchResult.map((book) => (
-              <li key={book.id}>
-                <div className="book">
-                  <div className="book-top">
-                    <div
-                      className="book-cover"
-                      style={{
-                        width: 128,
-                        height: 193,
-                        backgroundImage: `url(${book.imageLinks.thumbnail})`,
-                      }}
-                    ></div>
-                    <div className="book-shelf-changer">
-                      <select
-                        value={book.shelf}
-                        onChange={(event) => handleShelfChange(event, book)}
-                      >
-                        <option value="none" disabled>
-                          Move to...
-                        </option>
-                        {shelves.map((shelf) => (
-                          <option key={shelf.key} value={shelf.key}>
-                            {shelf.title}
+            {searchResult
+              // .filter((book) => book.id)
+              .map((book) => (
+                <li key={book.id}>
+                  <div className="book">
+                    <div className="book-top">
+                      <div
+                        className="book-cover"
+                        style={{
+                          width: 128,
+                          height: 193,
+                          backgroundImage: `url(${book.imageLinks.thumbnail})`,
+                        }}
+                      ></div>
+                      <div className="book-shelf-changer">
+                        <select
+                          value={book.shelf}
+                          onChange={(event) => handleShelfChange(event, book)}
+                        >
+                          <option value="none" disabled>
+                            Move to...
                           </option>
-                        ))}
-                        <option value="none">None</option>
-                      </select>
+                          {shelves.map((shelf) => (
+                            <option key={shelf.key} value={shelf.key}>
+                              {shelf.title}
+                            </option>
+                          ))}
+                          <option value="none">None</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
           </ol>
         </div>
       </div>

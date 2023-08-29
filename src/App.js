@@ -14,11 +14,39 @@ const App = () => {
     };
     getBooks();
   }, []);
+  const shelves = [
+    { key: "currentlyReading", title: "Currently Reading" },
+    { key: "wantToRead", title: "Want to Read" },
+    { key: "read", title: "Read" },
+  ];
+  const handleShelfChange = async (event, bookToUpdate) => {
+    const newShelf = event.target.value;
+    try {
+      const updatedBook = await BooksAPI.update(bookToUpdate, newShelf);
+      const updatedBooks = books.map((book) =>
+        book.id === updatedBook.id ? { ...book, shelf: newShelf } : book
+      );
+      setBooks(updatedBooks);
+    } catch (error) {
+      console.error("Error updating book shelf: ", error);
+    }
+  };
 
   return (
     <Routes>
-      <Route exact path="/" element={<ReadStatus books={books} />} />
-      <Route path="/search" element={<BookSearch />} />
+      <Route
+        exact
+        path="/"
+        element={
+          <ReadStatus books={books} handleShelfChange={handleShelfChange} />
+        }
+      />
+      <Route
+        path="/search"
+        element={
+          <BookSearch handleShelfChange={handleShelfChange} shelves={shelves} />
+        }
+      />
     </Routes>
   );
 };
