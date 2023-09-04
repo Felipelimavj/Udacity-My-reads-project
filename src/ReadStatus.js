@@ -19,7 +19,7 @@ const ReadStatus = ({ books, setBooks }) => {
 
       const filteredBooks = books.filter((book) => book.id !== updatedBook.id);
 
-      const updatedBooks = filteredBooks.concat(bookToUpdate);
+      const updatedBooks = filteredBooks.concat();
 
       setBooks(updatedBooks);
     } catch (error) {
