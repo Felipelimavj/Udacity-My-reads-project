@@ -14,15 +14,19 @@ const ReadStatus = ({ books, setBooks }) => {
     const newShelf = event.target.value;
     try {
       const updatedBook = await BooksAPI.update(bookToUpdate, newShelf);
-      const updatedBooks = books.map((book) =>
-        book.id === updatedBook.id ? { ...book, shelf: newShelf } : book
-      );
+
+      bookToUpdate.shelf = newShelf;
+
+      const filteredBooks = books.filter((book) => book.id !== updatedBook.id);
+
+      const updatedBooks = filteredBooks.concat(bookToUpdate);
+
       setBooks(updatedBooks);
     } catch (error) {
       console.error("Error updating book shelf: ", error);
     }
   };
-
+  // console.log(books);
   return (
     <div className="list-books">
       <div className="list-books-title">

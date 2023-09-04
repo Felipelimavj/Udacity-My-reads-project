@@ -5,7 +5,7 @@ import ReadStatus from "./ReadStatus";
 import BookSearch from "./BookSearch";
 import * as BooksAPI from "./BooksAPI";
 
-const App = () => {
+const App = ({ handleShelfChange, shelves }) => {
   const [books, setBooks] = useState([]);
   useEffect(() => {
     const getBooks = async () => {
@@ -14,23 +14,6 @@ const App = () => {
     };
     getBooks();
   }, []);
-  const shelves = [
-    { key: "currentlyReading", title: "Currently Reading" },
-    { key: "wantToRead", title: "Want to Read" },
-    { key: "read", title: "Read" },
-  ];
-  const handleShelfChange = async (event, bookToUpdate) => {
-    const newShelf = event.target.value;
-    try {
-      const updatedBook = await BooksAPI.update(bookToUpdate, newShelf);
-      const updatedBooks = books.map((book) =>
-        book.id === updatedBook.id ? { ...book, shelf: newShelf } : book
-      );
-      setBooks(updatedBooks);
-    } catch (error) {
-      console.error("Error updating book shelf: ", error);
-    }
-  };
 
   return (
     <Routes>
@@ -38,7 +21,11 @@ const App = () => {
         exact
         path="/"
         element={
-          <ReadStatus books={books} handleShelfChange={handleShelfChange} />
+          <ReadStatus
+            books={books}
+            setBooks={setBooks}
+            handleShelfChange={handleShelfChange}
+          />
         }
       />
       <Route
