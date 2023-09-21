@@ -5,7 +5,7 @@ import ReadStatus from "./ReadStatus";
 import BookSearch from "./BookSearch";
 import * as BooksAPI from "./BooksAPI";
 
-const App = ({ handleShelfChange, shelves }) => {
+const App = ({ shelves }) => {
   const [books, setBooks] = useState([]);
   useEffect(() => {
     const getBooks = async () => {
@@ -14,7 +14,22 @@ const App = ({ handleShelfChange, shelves }) => {
     };
     getBooks();
   }, []);
+  const handleShelfChange = async (event, bookToUpdate) => {
+    const newShelf = event.target.value;
+    try {
+      const updatedBook = await BooksAPI.update(bookToUpdate, newShelf);
 
+      bookToUpdate.shelf = newShelf;
+
+      const filteredBooks = books.filter((book) => book.id !== updatedBook.id);
+
+      const updatedBooks = filteredBooks.concat();
+
+      setBooks(updatedBooks);
+    } catch (error) {
+      console.error("Error updating book shelf: ", error);
+    }
+  };
   return (
     <Routes>
       <Route
@@ -25,13 +40,20 @@ const App = ({ handleShelfChange, shelves }) => {
             books={books}
             setBooks={setBooks}
             handleShelfChange={handleShelfChange}
+            shelves={shelves}
           />
         }
       />
+
       <Route
         path="/search"
         element={
-          <BookSearch handleShelfChange={handleShelfChange} shelves={shelves} />
+          <BookSearch
+            books={books}
+            setBooks={setBooks}
+            handleShelfChange={handleShelfChange}
+            shelves={shelves}
+          />
         }
       />
     </Routes>
@@ -39,30 +61,3 @@ const App = ({ handleShelfChange, shelves }) => {
 };
 
 export default App;
-
-// import React, { useState } from "react";
-// import "./App.css";
-// import BookSearch from "./BookSearch";
-// import ReadStatus from "./ReadStatus";
-
-// // function App() {
-//  const App = () => {
-//   const [showSearchPage, setShowSearchPage] = useState(ReadStatus);
-
-//   const toggleSearchPage = () => {
-//     setShowSearchPage(!showSearchPage);
-//   };
-
-//   return (
-//     <div className="app">
-//       {showSearchPage ? (
-//         <BookSearch onBack={toggleSearchPage} />
-//       ) : (
-//         <ReadStatus onSearch={toggleSearchPage} />
-//       )}
-
-//     </div>
-//   );
-// }
-
-// export default App;
